@@ -1,0 +1,16 @@
+SELECT
+  TOP 100
+  CAST((A.CreationDate - Q.CreationDate) AS time) AS AnsweringTime
+FROM
+  (
+    SELECT * 
+    FROM Posts 
+    WHERE PostTypeId = 1
+  ) Q
+  INNER JOIN
+  (
+    SELECT *
+    FROM Posts
+    WHERE PostTypeId = 2
+  ) A
+  ON Q.AcceptedAnswerId = A.Id
