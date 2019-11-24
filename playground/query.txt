@@ -1,10 +1,35 @@
+Query at: https://data.stackexchange.com/stackoverflow/query/1158457
+
+Queries about overall data:
+
+Number of all the questions on StackOverflow: 18 564 029
+
+Number of all the answers to questions on StackOverflow: 28 203 346
+
+Number of all the users on StackOverflow: 11 337 789
+
+-------------------------------------------------------------------------------
+
+Actual query will return 9550352 rows.
+We sample to 500000 rows.
+
 SELECT
-  TOP 100
-  CAST((A.CreationDate - Q.CreationDate) AS time) AS AnsweringTime
+  Q.Id AS QuestionId,
+  CAST((A.CreationDate - Q.CreationDate) AS time) AS AnsweringTime,
+  Q.CreationDate AS QuestionCreationDate,
+  Q.Score AS QuestionScore,
+  Q.ViewCount AS QuestionViewCount,
+  Q.Tags AS QuestionTags,
+  Q.AnswerCount AS QuestionAnswerCount,
+  Q.CommentCount AS QuestionCommentCount,
+  U.Reputation AS OwnerReputation,
+  U.Views AS OwnerViews,
+  U.UpVotes AS OwnerUpVotes,
+  U.DownVotes AS OwnerDownVotes
 FROM
   (
-    SELECT * 
-    FROM Posts 
+    SELECT *
+    FROM Posts
     WHERE PostTypeId = 1
   ) Q
   INNER JOIN
@@ -12,5 +37,10 @@ FROM
     SELECT *
     FROM Posts
     WHERE PostTypeId = 2
-  ) A
-  ON Q.AcceptedAnswerId = A.Id
+  ) A ON Q.AcceptedAnswerId = A.Id
+  INNER JOIN
+  (
+    SELECT *
+    FROM Users
+  ) U
+  ON Q.OwnerUserId = U.Id
